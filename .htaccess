@@ -1,0 +1,13 @@
+RewriteEngine on
+
+
+RewriteCond $1 !^(index\.php|resources|robots\.txt|public)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [QSA,L]
+<Files 403.shtml>
+order allow,deny
+allow from all
+</Files>
+RewriteCond %{HTTP_HOST} ^smhc\.hersclinic\.id$
+RewriteRule ^/?$ "https\:\/\/smhc\.hersclinic\.id\/auth\/login" [R=301,L]
