@@ -43,7 +43,7 @@ class Medicalrecord extends MY_Controller
         }
     }
 
-    public function detail($medical_record)
+    public function detail($id_medical_record)
     {
         // ! dispatch browser event
         // $data['patients'] = $this->db->get_where('medical_records', ['id' => $medical_record])
@@ -51,25 +51,24 @@ class Medicalrecord extends MY_Controller
         // ->join('doctor')
         // ->join('medical_detail_records')
         // ->join('customer');
-        $query = "SELECT `medical_records`.*,`doctor`.`name` AS `nama_doctor`,`customer`.`name` AS 'nama_customer',`customer`.`nickname`,`customer`.`phone`
-                From `medical_records`
-                INNER JOIN `doctor` ON `medical_records`.`id_doctor` = `doctor`.`id`
-                INNER JOIN `customer` ON  `medical_records`.`id_customer`= `customer`.`id`
-                Where `medical_records`.`id` = $medical_record
-           ";
-        $detail = $this->db->query($query)->row_array();
 
-        // var_dump($detail);
+     
+
+        $query = "SELECT `medical_records_detail`.*, `medical_records_detail`.`anamnesa`,`medical_records_detail`.`diagnosa`,`medical_records_detail`.`diagnosa`,`medical_records_detail`.`pemeriksaan`,`medical_records_detail`.`created_at`,`medical_records_detail`.`id_therapies`,`medical_records_detail`.`id_items`,`medical_records_detail`.`note`,`doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
+
+        FROM `medical_records_detail`
+        INNER JOIN `doctor` ON `medical_records_detail`.`id_doctor`=`doctor`.`id`    
+        INNER JOIN `store` ON `medical_records_detail`.`id_store`=`store`.`id`    
+        INNER JOIN `medical_records` ON `medical_records_detail`.`id_medical_records`=`medical_records`.`id`    
+        WHERE `medical_records`.`id`= $id_medical_record
+        ";
+
+        $data['detail'] = $this->db->query($query)->row_array();
+
+        // var_dump($data);
         // die;
 
-        
-        $data['page_title']          = 'Doctor - Medical Records History';
-        $data['nav_title']      = 'medical_records_history';
-        $data['detail_title']   = 'cashier';
-        
-
-        $this->load->view('pages/doctor/medical-records/history/detail', $detail);
-
+        $this->load->view('pages/doctor/medical-records/history/detail', $data);
     }
 
     public function load_data_medical_records_another_clinic($phone, $name, $id_store)
@@ -135,14 +134,14 @@ class Medicalrecord extends MY_Controller
         }
     }
 
-    public function detail_($id_customer)
+    public function load_data_medical_records($id_customer)
     {
 
         $this->medicalrecord->table = 'medical_records_detail';
         $data['getPatients']        = $this->medicalrecord
             ->select([
                 'medical_records_detail.anamnesa', 'medical_records_detail.diagnosa', 'medical_records_detail.pemeriksaan',
-                'medical_records_detail.created_at', 'medical_records_detail.id_therapies', 'medical_records_detail.id_items',
+                'medical_records_detail.created_at', 'medical_records_detail.id_therapies',  'medical_records_detail.id_items',
                 'medical_records_detail.note', 'doctor.name AS doctor_name', 'store.name AS store_name',
             ])
             ->join('medical_records')
