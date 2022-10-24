@@ -39,7 +39,7 @@
                                         <th>Date</th>
                                         <th>Anamnese</th>
                                         <th>Diagnosa</th>
-                                        <!-- <th>Theraphy</th> -->
+                                        <th>Theraphy</th>
                                         <th>Note</th>
                                         <th>Doctor</th>
                                         <th>Clinic</th>
@@ -52,7 +52,7 @@
                                         <td><?= date_format(new DateTime($detail['created_at']), 'd/m/Y') ?></td>
                                         <td><?= $detail['anamnesa']; ?></td>
                                         <td><?= $detail['diagnosa']; ?></td>
-                                        <!-- <td><?= $detail['title']; ?></td> -->
+                                        <td><?= $detail['title']; ?></td>
                                         <td>
                                             <?= $detail['note'] == "" || $detail['note'] == null ? "" : $detail['note']; ?>
                                         </td>

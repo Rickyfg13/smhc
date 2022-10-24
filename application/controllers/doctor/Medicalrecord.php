@@ -51,19 +51,22 @@ class Medicalrecord extends MY_Controller
         // ->join('doctor')
         // ->join('medical_detail_records')
         // ->join('customer');
-
-     
-
-        $query = "SELECT `medical_records_detail`.*, `medical_records_detail`.`anamnesa`,`medical_records_detail`.`diagnosa`,`medical_records_detail`.`diagnosa`,`medical_records_detail`.`pemeriksaan`,`medical_records_detail`.`created_at`,`medical_records_detail`.`id_therapies`,`medical_records_detail`.`id_items`,`medical_records_detail`.`note`,`doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
+        
+       
+        $query = "SELECT `medical_records_detail`.*,`doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
 
         FROM `medical_records_detail`
         INNER JOIN `doctor` ON `medical_records_detail`.`id_doctor`=`doctor`.`id`    
-        INNER JOIN `store` ON `medical_records_detail`.`id_store`=`store`.`id`    
+        INNER JOIN `store` ON `medical_records_detail`.`id_store`=`store`.`id`     
         INNER JOIN `medical_records` ON `medical_records_detail`.`id_medical_records`=`medical_records`.`id`    
+        
         WHERE `medical_records`.`id`= $id_medical_record
         ";
 
+
         $data['detail'] = $this->db->query($query)->row_array();
+
+        // $data['product'] = $this->Medicalrecord_model->getProduct();
 
         // var_dump($data);
         // die;

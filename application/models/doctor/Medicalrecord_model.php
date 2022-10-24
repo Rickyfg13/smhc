@@ -34,6 +34,20 @@ class Medicalrecord_model extends MY_Model
 
         return $validationRules;
     }
+
+
+
+    public function getProduct(){
+
+
+
+        $query = "SELECT `therapies_detail`.*,`therapies_detail`.`id`, `product`.`title`
+                FROM `therapies_detail`
+                INNER JOIN `product` ON `therapies_detail` . `id_product`=`product`.`id`
+        ";
+
+        return $this->db->get_where($query)->row_array();
+    }
 }
 
 /* End of file Medicalrecord.php */
