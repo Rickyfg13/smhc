@@ -53,7 +53,7 @@ class Medicalrecord extends MY_Controller
         // ->join('customer');
         
        
-        $query = "SELECT `medical_records_detail`.*,`doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
+        $query = "SELECT `medical_records_detail`.*, `doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
 
         FROM `medical_records_detail`
         INNER JOIN `doctor` ON `medical_records_detail`.`id_doctor`=`doctor`.`id`    
@@ -68,8 +68,8 @@ class Medicalrecord extends MY_Controller
 
         // $data['product'] = $this->Medicalrecord_model->getProduct();
 
-        // var_dump($data);
-        // die;
+        var_dump($data);
+        die;
 
         $this->load->view('pages/doctor/medical-records/history/detail', $data);
     }
