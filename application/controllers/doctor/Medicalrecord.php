@@ -28,13 +28,14 @@ class Medicalrecord extends MY_Controller
 
         $this->medicalrecord->table = 'medical_records';
         $data['patients']       = $this->medicalrecord->select([
-            'customer.id', 'customer.name', 'customer.phone', 'customer.address', 'medical_records.id as id', ' customer.birth_date'
+            'customer.id', 'customer.name', 'customer.phone', 'customer.address', 'medical_records.id as id', ' customer.birth_date',
         ])
             ->join('customer')
             ->orderBy('medical_records.created_at', 'DESC')
             ->get();
+        // var_dump($data['patients']);
+        // die;
         $data['page']           = 'pages/doctor/medical-records/history/index';
-        // var_dump($data['patients']);die;
 
         if ($this->session->userdata('role') == 'doctor') {
             $this->view_doctor($data);
@@ -45,33 +46,101 @@ class Medicalrecord extends MY_Controller
 
     public function detail($id_medical_record)
     {
-        // ! dispatch browser event
-        // $data['patients'] = $this->db->get_where('medical_records', ['id' => $medical_record])
-        // ->join('queue')
-        // ->join('doctor')
-        // ->join('medical_detail_records')
-        // ->join('customer');
-        
-       
-        $query = "SELECT `medical_records_detail`.*, `doctor`.`name` AS `doctor_name`,`store`.`name` AS `store_name`
+        $this->medicalrecord->table = 'medical_records_detail';
+        $data['detail'] = $this->medicalrecord->select([
+            'medical_records_detail.id as id', 'medical_records_detail.anamnesa', 'medical_records_detail.diagnosa', 'medical_records_detail.note', 'medical_records_detail.id_therapies', 'medical_records_detail.id_items', 'medical_records_detail.created_at as date', 'doctor.name AS doctor_name', 'store.name AS store_name'
+        ])
 
-        FROM `medical_records_detail`
-        INNER JOIN `doctor` ON `medical_records_detail`.`id_doctor`=`doctor`.`id`    
-        INNER JOIN `store` ON `medical_records_detail`.`id_store`=`store`.`id`     
-        INNER JOIN `medical_records` ON `medical_records_detail`.`id_medical_records`=`medical_records`.`id`    
-        
-        WHERE `medical_records`.`id`= $id_medical_record
-        ";
+            ->join('medical_records')
+            ->join('doctor')
+            ->join('store')
+            ->where('medical_records_detail.id_medical_records', $id_medical_record)
+            ->orderBy('medical_records_detail.created_at', 'ASC')
+            ->get();
 
 
-        $data['detail'] = $this->db->query($query)->row_array();
 
-        // $data['product'] = $this->Medicalrecord_model->getProduct();
+        $this->medicalrecord->table = 'therapies_detail';
+        foreach ($data['detail'] as $row) {
+            $data['therapies'][$row->id_therapies] = $this->medicalrecord->select([
+                'product.title'
+            ])
+                ->join('product')
+                ->where('therapies_detail.id_therapies', $row->id_therapies)
+                ->get();
+        }
 
-        var_dump($data);
-        die;
+        $this->medicalrecord->table = 'medical_records';
+        $data['customer'] = $this->medicalrecord->select([
+            'customer.id', 'customer.name', 'customer.phone', 'customer.address', 'customer.birth_date', 'medical_records.id as id', 'customer.nickname', 'customer.email', 'customer.phone', 'customer.previous_skincare', 'customer.job', 'customer.identity_number',
+        ])
+            ->join('customer')
+            ->where('medical_records.id', $id_medical_record)
+            ->get();
 
-        $this->load->view('pages/doctor/medical-records/history/detail', $data);
+
+        $data['page_title']          = 'Doctor - Medical Records History';
+        $data['nav_title']      = 'medical_records_history';
+        $data['detail_title']   = 'cashier';
+        $data['page']           = 'pages/doctor/medical-records/history/detail';
+
+        if ($this->session->userdata('role') == 'doctor') {
+            $this->view_doctor($data);
+        } else {
+            $this->view_cashier($data);
+        }
+    }
+
+    public function print_detail($id_medical_record)
+    {
+        // ! dispatch browser event 
+        $this->medicalrecord->table = 'medical_records_detail';
+        $data['detail'] = $this->medicalrecord->select([
+            'medical_records_detail.id as id', 'medical_records_detail.anamnesa', 'medical_records_detail.diagnosa', 'medical_records_detail.note', 'medical_records_detail.id_therapies', 'medical_records_detail.id_items', 'medical_records_detail.created_at as date', 'doctor.name AS doctor_name', 'store.name AS store_name'
+        ])
+
+            ->join('medical_records')
+            ->join('doctor')
+            ->join('store')
+            ->where('medical_records_detail.id_medical_records', $id_medical_record)
+            ->orderBy('medical_records_detail.created_at', 'ASC')
+            ->get();
+
+        $this->medicalrecord->table = 'therapies_detail';
+        foreach ($data['detail'] as $row) {
+            $data['therapies'][$row->id_therapies] = $this->medicalrecord->select([
+                'product.title'
+            ])
+                ->join('product')
+                ->where('therapies_detail.id_therapies', $row->id_therapies)
+                ->get();
+        }
+
+        // get customer data
+        $this->medicalrecord->table = 'medical_records';
+        $data['customer'] = $this->medicalrecord->select([
+            'customer.id', 'customer.name', 'customer.phone', 'customer.address', 'customer.birth_date', 'medical_records.id as id', 'customer.nickname', 'customer.email', 'customer.phone', 'customer.previous_skincare', 'customer.job', 'customer.identity_number',
+        ])
+            ->join('customer')
+            ->where('medical_records.id', $id_medical_record)
+            ->get();
+
+        // var_dump($data['customer']);
+        // die;
+
+        $data['page_title']          = 'Doctor - Medical Records History';
+        $data['nav_title']      = 'medical_records_history';
+        $data['detail_title']   = 'cashier';
+        // $data['page']           = 'pages/doctor/medical-records/history/print/index';
+        /// var_dump($data['patients']);die;
+
+        // if ($this->session->userdata('role') == 'doctor') {
+        //     $this->view_doctor($data);
+        // } else {
+        //     $this->view_cashier($data);
+        // }
+
+        $this->load->view('pages/doctor/medical-records/history/print/index', $data);
     }
 
     public function load_data_medical_records_another_clinic($phone, $name, $id_store)
@@ -161,12 +230,6 @@ class Medicalrecord extends MY_Controller
         ])->where('id_customer', $id_customer)->first();
 
 
-        $this->medicalrecord->table = 'therapies_detail';
-        foreach ($data['getPatients'] as $row) {
-            $data['therapies'][$row->id_therapies] = $this->medicalrecord->select([
-                'product.title'
-            ])->join('product')->where('therapies_detail.id_therapies', $row->id_therapies)->get();
-        }
 
         $this->medicalrecord->table = 'items_detail';
         foreach ($data['getPatients'] as $row) {

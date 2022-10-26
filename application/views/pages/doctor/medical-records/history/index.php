@@ -24,8 +24,8 @@
                                         <td><?= $row->address; ?></td>
                                         <td>
                                             <div class="btn-group">
-                                                <!-- Send ID to controller -->
-                                               <a href="<?= base_url("doctor/medicalrecord/detail/") . $row->id; ?>" target="_blank" class="btn btn-outline-warning btn-xs" id="detailPatient">Detail</a>
+                                                <a class="btn btn-outline-primary btn-xs" href="<?= base_url("doctor/medicalrecord/print_detail/") . $row->id; ?>" target="_blank">Print</a>
+                                                <a href="<?= base_url("doctor/medicalrecord/detail/") . $row->id; ?>" class="btn btn-outline-warning btn-xs" id="detailPatient">Detail</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -40,8 +40,8 @@
                         </select> -->
 
 
-                        <div class="tablePatientsMedicalRecordsHistory" style="margin-top: 70px !important;">
-                            <!-- <div class="data-tables datatable mt-4">
+                        <!-- <div class="tablePatientsMedicalRecordsHistory" style="margin-top: 70px !important;">
+                            <div class="data-tables datatable mt-4">
                                 <table id="dataTablePatientsMedicalRecordsHistory" class="text-center table table-hover">
                                     <thead>
                                         <tr>
@@ -57,8 +57,8 @@
 
                                     </tbody>
                                 </table>
-                            </div> -->
-                        </div>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

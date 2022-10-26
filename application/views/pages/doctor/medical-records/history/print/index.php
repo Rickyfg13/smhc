@@ -1,16 +1,3 @@
-<?php
-//hitung umur
-
-$birthDate = new DateTime($patient->birth_date);
-$today = new DateTime();
-
-if ($birthDate < $today) {
-    $umur = $today->diff($birthDate)->y;
-}
-
-
-?>
-
 <!doctype html>
 <html lang="en">
 
@@ -59,7 +46,7 @@ if ($birthDate < $today) {
             </div>
         </div>
 
-        <div class="row mt-4 justify-content-center">
+        <!-- <div class="row mt-4 justify-content-center">
             <table class="table table-sm table-borderless" style="margin-left: 3rem;">
                 <tr>
                     <td>Name</td>
@@ -124,7 +111,7 @@ if ($birthDate < $today) {
                     <?php $no = 1;
                     foreach ($getPatients as $row) : ?>
                         <tr>
-                            <td scope="row"><?= date_format(new DateTime($row->created_at), 'd/m/Y') ?></td>
+                            <td scope="row"><?= date_format(new DateTime($row->date), 'd/m/Y') ?></td>
                             <td><?= $row->anamnesa; ?></td>
                             <td><?= $row->diagnosa; ?></td>
                             <td>
@@ -132,7 +119,7 @@ if ($birthDate < $today) {
                                     <?php
                                     $i = 0;
                                     foreach ($therapies[$row->id_therapies] as $row2) : ?>
-                                        <!-- <span class="badge badge-pill badge-dark" style="font-size: 13px;"><?= $row2->title; ?></span> -->
+
                                         <?php if ($i == count($therapies[$row->id_therapies]) - 1) : ?>
                                             <li><?= $row2->title; ?></li>
                                         <?php else : ?>
@@ -163,20 +150,132 @@ if ($birthDate < $today) {
                     <?php endforeach ?>
                 </tbody>
             </table>
+        </div> -->
+        <div class="main-content-inner">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="card mt-4">
+                            <div class="card-body">
+
+                                <h4 class="header-title text-center">Medical Record Detail</h4>
+                                <div class="data-patient mt-5 mb-5">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <?php foreach ($customer as $row) : ?>
+
+                                                <?php $birthDate = new DateTime($row->birth_date);
+                                                $today = new DateTime();
+
+                                                if ($birthDate < $today) {
+                                                    $umur = $today->diff($birthDate)->y;
+                                                } ?>
+                                                <tr>
+                                                    <td>Name</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->name; ?></td>
+                                                    <td>No RM</td>
+                                                    <td>:</td>
+                                                    <td><?= isset($row->id) ? substr($row->id, 1) : "-"; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nick Name</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->nickname == "" ? "-" : $row->nickname; ?></td>
+                                                    <td>Address</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->address; ?></td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>Email</td>
+                                                    <td>:</td>
+                                                    <td><?= strtolower($row->email); ?></td>
+                                                    <td>DoB/Age</td>
+                                                    <td>:</td>
+                                                    <td><?= $umur; ?>&nbsp;Years Old</td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td>Job</td>
+                                                    <td>:</td>
+                                                    <td><?= ucwords($row->job); ?></td>
+                                                    <td>KTP</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->identity_number; ?></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Phone/WA</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->phone; ?></td>
+                                                    <td>Previous Skincare</td>
+                                                    <td>:</td>
+                                                    <td><?= $row->previous_skincare; ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <table class="table table-striped" id="patients">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Anamnese</th>
+                                            <th>Diagnosa</th>
+                                            <th>Theraphy</th>
+                                            <th>Note</th>
+                                            <th>Doctor</th>
+                                            <th>Clinic</th>
+                                            <!-- <th></th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($detail as $row => $index) : ?>
+                                            <tr>
+                                                <td><?= date_format(new DateTime($index->date), 'd/m/Y') ?></td>
+                                                <td><?= $index->anamnesa; ?></td>
+                                                <td><?= $index->diagnosa; ?></td>
+                                                <td>
+                                                    <?php foreach ($therapies[$index->id_therapies] as $row2) : ?>
+                                                        <span class="badge badge-pill badge-info" style="font-size: 13px;"><?= $row2->title; ?></span>
+                                                    <?php endforeach ?>
+                                                </td>
+                                                <td>
+                                                    <?= $index->note == "" || $index->note == null ? "" : $index->note; ?>
+                                                </td>
+                                                <th><?= $index->doctor_name; ?></th>
+                                                <td><?= $index->store_name; ?></td>
+                                                <!-- <td>
+                                            <a href="<?= base_url('doctor/medical-records/history/detail/' . $index->id_medical_records) ?>" class="btn btn-primary btn-sm">Detail</a>
+                                        </td> -->
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+
+
+                                <div class="tablePatientsMedicalRecordsHistory" style="margin-top: 70px !important;">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-
         <div class="row footer">
-
             <span>https://www.hersclinic.id</span>
-
         </div>
     </div>
 
-
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-
+    <script>
+        window.print();
+    </script>
 
 </body>
 

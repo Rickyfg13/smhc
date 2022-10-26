@@ -32,7 +32,66 @@
                 <div class="col-lg-12 col-md-12">
                     <div class="card mt-4">
                         <div class="card-body">
-                            <h4 class="header-title">Medical Record Detail</h4>
+                            <h4 class="header-title text-center">Medical Record Detail</h4>
+                            <div class="data-patient mt-5 mb-5">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+
+                                        <?php foreach ($customer as $row) : ?>
+
+                                            <?php $birthDate = new DateTime($row->birth_date);
+                                            $today = new DateTime();
+
+                                            if ($birthDate < $today) {
+                                                $umur = $today->diff($birthDate)->y;
+                                            } ?>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td>:</td>
+                                                <td><?= $row->name; ?></td>
+                                                <td>No RM</td>
+                                                <td>:</td>
+                                                <td><?= isset($row->id) ? substr($row->id, 1) : "-"; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nick Name</td>
+                                                <td>:</td>
+                                                <td><?= $row->nickname == "" ? "-" : $row->nickname; ?></td>
+                                                <td>Address</td>
+                                                <td>:</td>
+                                                <td><?= $row->address; ?></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td>:</td>
+                                                <td><?= strtolower($row->email); ?></td>
+                                                <td>DoB/Age</td>
+                                                <td>:</td>
+                                                <td><?= $umur; ?>&nbsp;Years Old</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Job</td>
+                                                <td>:</td>
+                                                <td><?= ucwords($row->job); ?></td>
+                                                <td>KTP</td>
+                                                <td>:</td>
+                                                <td><?= $row->identity_number; ?></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Phone/WA</td>
+                                                <td>:</td>
+                                                <td><?= $row->phone; ?></td>
+                                                <td>Previous Skincare</td>
+                                                <td>:</td>
+                                                <td><?= $row->previous_skincare; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+
+                                    </table>
+                                </div>
+                            </div>
                             <table class="table table-striped" id="patients">
                                 <thead>
                                     <tr>
@@ -43,22 +102,30 @@
                                         <th>Note</th>
                                         <th>Doctor</th>
                                         <th>Clinic</th>
-                                        <th></th>
+                                        <!-- <th></th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <!-- <td><?= $detail['created_at']; ?></td> -->
-                                        <td><?= date_format(new DateTime($detail['created_at']), 'd/m/Y') ?></td>
-                                        <td><?= $detail['anamnesa']; ?></td>
-                                        <td><?= $detail['diagnosa']; ?></td>
-                                        <td><?= $detail['title']; ?></td>
-                                        <td>
-                                            <?= $detail['note'] == "" || $detail['note'] == null ? "" : $detail['note']; ?>
-                                        </td>
-                                        <td><?= $detail['doctor_name']; ?></td>
-                                        <td><?= $detail['store_name']; ?></td>
-                                    </tr>
+                                    <?php foreach ($detail as $row => $index) : ?>
+                                        <tr>
+                                            <td><?= date_format(new DateTime($index->date), 'd/m/Y') ?></td>
+                                            <td><?= $index->anamnesa; ?></td>
+                                            <td><?= $index->diagnosa; ?></td>
+                                            <td>
+                                                <?php foreach ($therapies[$index->id_therapies] as $row2) : ?>
+                                                    <span class="badge badge-pill badge-info" style="font-size: 13px;"><?= $row2->title; ?></span>
+                                                <?php endforeach ?>
+                                            </td>
+                                            <td>
+                                                <?= $index->note == "" || $index->note == null ? "" : $index->note; ?>
+                                            </td>
+                                            <th><?= $index->doctor_name; ?></th>
+                                            <td><?= $index->store_name; ?></td>
+                                            <!-- <td>
+                                            <a href="<?= base_url('doctor/medical-records/history/detail/' . $index->id_medical_records) ?>" class="btn btn-primary btn-sm">Detail</a>
+                                        </td> -->
+                                        </tr>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
 
